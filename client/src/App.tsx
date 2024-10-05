@@ -51,21 +51,25 @@ function App() {
     const formData = new FormData();
     formData.append("file", selectedFileBase);
 
-  try {
-    const response = await axios.post("http://localhost:8000/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data", // Set the content type for file uploads
-      },
-    });
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Set the content type for file uploads
+          },
+        }
+      );
 
-    if (response.status === 200) {
-      console.log("File uploaded successfully!");
-    } else {
-      console.error("File upload failed.");
+      if (response.status === 200) {
+        console.log("File uploaded successfully!");
+      } else {
+        console.error("File upload failed.");
+      }
+    } catch (error) {
+      console.error("Error while uploading file:", error);
     }
-  } catch (error) {
-    console.error("Error while uploading file:", error);
-  }
   };
 
   const handleSubmitData = async () => {
@@ -73,24 +77,28 @@ function App() {
     if (!selectedFileBase) return;
 
     const formData = new FormData();
-    formData.append("file", selectedFileData);
-    formData.append("file1", selectedFileBase);
+    formData.append("file1", selectedFileData);
+    formData.append("file2", selectedFileBase);
 
-  try {
-    const response = await axios.post("http://localhost:8000/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data", // Set the content type for file uploads
-      },
-    });
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Set the content type for file uploads
+          },
+        }
+      );
 
-    if (response.status === 200) {
-      console.log("File uploaded successfully!");
-    } else {
-      console.error("File upload failed.");
+      if (response.status === 200) {
+        console.log("File uploaded successfully!");
+      } else {
+        console.error("File upload failed.");
+      }
+    } catch (error) {
+      console.error("Error while uploading file:", error);
     }
-  } catch (error) {
-    console.error("Error while uploading file:", error);
-  }
   };
   return (
     <>
@@ -150,15 +158,14 @@ function App() {
             </button>
         )} */}
         </div>
-        {selectedFileData && selectedFileBase &&(
-            <button
-              onClick={handleSubmitData}
-              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Upload File
-            </button>
-          )}
-
+        {selectedFileData && selectedFileBase && (
+          <button
+            onClick={handleSubmitData}
+            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Upload File
+          </button>
+        )}
       </div>
     </>
   );

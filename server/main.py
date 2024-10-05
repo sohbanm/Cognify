@@ -1,9 +1,18 @@
 from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+
 import PyPDF2  # You can use any library you prefer for PDF processing
 from io import BytesIO
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Adjust this to your frontend's domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def root():
@@ -12,7 +21,7 @@ async def root():
 @app.post("/upload")
 async def upload_file(file1: UploadFile = File(...), file2: UploadFile = File(...) ):
     if file1.content_type != "application/pdf" and file2.content_type != "application/pdf":
-        return {"error": "Only PDF files are allowed"}
+        return JSONResponse(status_code=400, content={"error": "Only PDF files are allowed"})
 
     # Read the contents of the file
     contents1 = await file1.read()
@@ -36,7 +45,7 @@ async def upload_file(file1: UploadFile = File(...), file2: UploadFile = File(..
     print(file2.filename)
     print(text2)
 
-    return {"filename1": file1.filename, "filename2": file2.filename}
+    return JSONResponse(status_code=200, content={"filename1": file1.filename, "filename2": file2.filename})
     
 # @app.post("/uploadBase")
 # async def upload_file(file: UploadFile = File(...)):
