@@ -18,6 +18,17 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+.drop-zone {
+  cursor: pointer;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s;
+}
+
+.drop-zone:hover {
+  background-color: #e8e8e8;
+}
+
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
