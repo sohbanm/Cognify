@@ -8,7 +8,7 @@ from io import BytesIO
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Adjust this to your frontend's domain
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],  # Adjust this to your frontend's domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -19,33 +19,31 @@ async def root():
     return {"message": "Hello World"}
 
 @app.post("/upload")
-async def upload_file(file1: UploadFile = File(...), file2: UploadFile = File(...) ):
-    if file1.content_type != "application/pdf" and file2.content_type != "application/pdf":
+async def upload_file(file1: UploadFile = File(...)):
+    if file1.content_type != "application/pdf":
         return JSONResponse(status_code=400, content={"error": "Only PDF files are allowed"})
 
     # Read the contents of the file
     contents1 = await file1.read()
-    contents2 = await file2.read()
+
 
     # Convert bytes to a file-like object
     pdf_file1 = BytesIO(contents1)
-    pdf_file2 = BytesIO(contents2)
+
 
     # To process the PDF, use a library like PyPDF2
     pdf_reader1 = PyPDF2.PdfReader(pdf_file1)
-    pdf_reader2 = PyPDF2.PdfReader(pdf_file2)
+
 
     # Extract text from the first page as an example
     first_page1 = pdf_reader1.pages[0]
     text1 = first_page1.extract_text()
-    first_page2 = pdf_reader2.pages[0]
-    text2 = first_page2.extract_text()
+
     print(file1.filename)
     print(text1)
-    print(file2.filename)
-    print(text2)
 
-    return JSONResponse(status_code=200, content={"filename1": file1.filename, "filename2": file2.filename})
+
+    return JSONResponse(status_code=200, content={"filename1": file1.filename})
     
 # @app.post("/uploadBase")
 # async def upload_file(file: UploadFile = File(...)):
