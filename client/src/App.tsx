@@ -4,7 +4,7 @@ import "./App.css";
 
 function App() {
   const [selectedFileData, setSelectedFileData] = useState<File | null>(null);
-
+  const [fileDataUploaded, setFileDataUploaded] = useState(false);
   const handleFileDropData = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const files = e.dataTransfer.files;
@@ -45,6 +45,7 @@ function App() {
 
       if (response.status === 200) {
         console.log("File uploaded successfully!");
+        setFileDataUploaded(true);
       } else {
         console.error("File upload failed.");
       }
@@ -54,41 +55,55 @@ function App() {
   };
   return (
     <>
-      <div>
-        <h1 className="text-3xl font-bold text-left">Cognify</h1>
-      </div>
+      <div className="hero flex flex-col h-screen justify-center">
+        <div>
+          <h1 className="text-3xl font-bold text-left pl-20 py-4">Cognify💡</h1>
+        </div>
+        <div>
+          <p className="text-sm text-left pl-20 pb-6">
+            Saule ... , ostendit quod hoc quidem ... hoc quod dixit, ... potuit
+            adiutorium mihi, et educat me in tota vita nova facio certus ut Im
+            'non invenit. Ego quidem illius memini Saul. Gus sit amet
+            interfíciat mei tota familia. Nunc opus est mihi iste. Saul ... nunc
+            Saule.
+          </p>
+        </div>
+        <div className="upload-container flex flex-col justify-center items-center">
+          {!fileDataUploaded && (
+            <>
+              <div
+                className="drop-zone rounded-lg border-2 border-dashed border-gray-400 p-4 w-64 h-32 flex justify-center items-center"
+                onClick={handleClickData}
+                onDrop={handleFileDropData}
+                onDragOver={(e) => e.preventDefault()}
+              >
+                {selectedFileData ? (
+                  <p>{selectedFileData.name}</p>
+                ) : (
+                  <p>Drop a file here or click to upload</p>
+                )}
+              </div>
 
-      <div className="flex">
-        <div
-          className="drop-zone border-2 border-dashed border-gray-400 p-4 w-64 h-32 flex justify-center items-center"
-          onClick={handleClickData}
-          onDrop={handleFileDropData}
-          onDragOver={(e) => e.preventDefault()}
-        >
-          {selectedFileData ? (
-            <p>{selectedFileData.name}</p>
-          ) : (
-            <p>Drop a file here or click to upload</p>
+              {/* Hidden file input */}
+              <input
+                id="fileInputData"
+                type="file"
+                style={{ display: "none" }}
+                onChange={handleFileSelectData}
+              />
+
+              {selectedFileData && (
+                <button
+                  onClick={handleSubmitData}
+                  className="mt-4 bg-cognifyPurple hover:bg-cognifyPurpleHover text-white px-4 py-2 rounded"
+                >
+                  Upload knowledge
+                </button>
+              )}
+            </>
           )}
         </div>
-
-        {/* Hidden file input */}
-        <input
-          id="fileInputData"
-          type="file"
-          style={{ display: "none" }}
-          onChange={handleFileSelectData}
-        />
       </div>
-
-      {selectedFileData && (
-        <button
-          onClick={handleSubmitData}
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Upload knowledge
-        </button>
-      )}
     </>
   );
 }
