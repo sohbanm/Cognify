@@ -30,7 +30,7 @@ function App() {
     if (!selectedFileData) return;
 
     const formData = new FormData();
-    formData.append("file1", selectedFileData);
+    formData.append("file", selectedFileData);
 
     try {
       const response = await axios.post(
