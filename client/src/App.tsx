@@ -2,9 +2,16 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./App.css";
 
-function App() {
+interface AppProps {
+  openQueryComponent: () => void; // Prop to open the new component
+}
+
+function App({ openQueryComponent }: AppProps) {
   const [selectedFileData, setSelectedFileData] = useState<File | null>(null);
   const [fileDataUploaded, setFileDataUploaded] = useState(false);
+  const [errorOccured, setErrorOccured] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("None");
+
   const handleFileDropData = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const files = e.dataTransfer.files;
@@ -46,11 +53,20 @@ function App() {
       if (response.status === 200) {
         console.log("File uploaded successfully!");
         setFileDataUploaded(true);
-      } else {
+        setErrorOccured(false);
+        openQueryComponent();
+      } else if (response.status === 500) {
+        console.log("Internal Server Error", response.data["error"]);
+        setErrorOccured(true);
+        setErrorMsg(response.data["details"]);
+      } 
+      else {
         console.error("File upload failed.");
       }
     } catch (error) {
-      console.error("Error while uploading file:", error);
+      setErrorOccured(true);
+      setErrorMsg("Ensure File is a PDF. Error while uploading file"); 
+      console.error("Ensure File is a PDF. Error while uploading file:", error);
     }
   };
   return (
@@ -61,11 +77,8 @@ function App() {
         </div>
         <div>
           <p className="text-sm text-left pl-20 pb-6">
-            Saule ... , ostendit quod hoc quidem ... hoc quod dixit, ... potuit
-            adiutorium mihi, et educat me in tota vita nova facio certus ut Im
-            'non invenit. Ego quidem illius memini Saul. Gus sit amet
-            interfíciat mei tota familia. Nunc opus est mihi iste. Saul ... nunc
-            Saule.
+            Upload a PDF file here that you want the LLM to learn about. 
+            After it processes it you will be able to ask it questions on the uploaded file.
           </p>
         </div>
         <div className="upload-container flex flex-col justify-center items-center">
@@ -80,7 +93,7 @@ function App() {
                 {selectedFileData ? (
                   <p>{selectedFileData.name}</p>
                 ) : (
-                  <p>Drop a file here or click to upload</p>
+                  <p className="text-center">Drop a file here or click to upload</p>
                 )}
               </div>
 
@@ -99,6 +112,11 @@ function App() {
                 >
                   Upload knowledge
                 </button>
+              )}
+              { errorOccured && (
+                <span className="mt-3 font-black text-red-500 text-xl">
+                  {errorMsg}
+                </span>
               )}
             </>
           )}

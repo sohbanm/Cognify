@@ -15,8 +15,8 @@ client/package-lock.json
 
 venv/
 
+server/__pycache__/
 server/__pycache__/*
-server/__pycache__/*.*
 server/chroma/*
 
 # Editor directories and files

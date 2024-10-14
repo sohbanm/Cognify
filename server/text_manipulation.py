@@ -2,17 +2,20 @@ from langchain.schema.document import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings.ollama import OllamaEmbeddings
 import PyPDF2
-from io import BytesIO
+from io import BytesIO  
 
 def load_documents(contents, filename):
     pdf_reader = PyPDF2.PdfReader(BytesIO(contents))
 
+    # Create Documents of each page for it to be made into chunks
     documents = []
     for page_num in range(len(pdf_reader.pages)):
         documents.append(Document(page_content = pdf_reader.pages[page_num].extract_text(), metadata = {
                 "source": filename,
                 "page": page_num
             }))
+        
+    return documents
 
 def split_documents(documents):
     text_splitter = RecursiveCharacterTextSplitter(
